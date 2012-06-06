@@ -1,3 +1,8 @@
+function fn_exists()
+{
+    type $1 2>/dev/null | grep -q 'shell function'
+}
+
 function theme_precmd {
     local TERMWIDTH
     (( TERMWIDTH = ${COLUMNS} - 1 ))
@@ -8,7 +13,13 @@ function theme_precmd {
 
     PR_FILLBAR=""
     PR_PWDLEN=""
-
+    
+    if ! fn_exists "rvm_prompt_info"; then
+      function rvm_prompt_info(){}
+    fi
+    if ! fn_exists "rbenv_prompt_info"; then
+      function rbenv_prompt_info() {}
+    fi
     local promptsize=${#${(%):---(%n@%m:%l)---()--}}
     local rubyprompt=`rvm_prompt_info || rbenv_prompt_info`
     local rubypromptsize=${#${rubyprompt}}
