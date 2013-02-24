@@ -43,7 +43,7 @@ for rbenvdir in "${rbenvdirs[@]}" ; do
       if [[ -n $(current_gemset) ]] ; then
         echo "$(current_ruby)@$(current_gemset)"
       else
-        echo "$(current_ruby)"
+        echo "($(current_ruby))"
       fi
     }
   fi
