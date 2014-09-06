@@ -1,4 +1,14 @@
-functions rbenv_prompt_info >& /dev/null || rbenv_prompt_info(){}
+functions chruby_prompt_info >& /dev/null || chruby_prompt_info(){}
+
+function _jonathan_theme_ruby_prompt_info {
+  if [[ "$(rvm_prompt_info)" != "" ]]; then
+    echo -n $(rvm_prompt_info)
+  elif [[ "$(rbenv_prompt_info)" != "" ]]; then
+    echo -n $(rbenv_prompt_info)
+  elif [[ "$(chruby_prompt_info)" != "" ]]; then
+    echo -n "($(chruby_prompt_info))"
+  fi
+}
 
 function theme_precmd {
     local TERMWIDTH
@@ -12,8 +22,8 @@ function theme_precmd {
     PR_PWDLEN=""
 
     local promptsize=${#${(%):---(%n@%m:%l)---()--}}
-    local rubyprompt=`rvm_prompt_info || rbenv_prompt_info`
-    local rubypromptsize=${#${rubyprompt}}
+    local rubyprompt=$(_jonathan_theme_ruby_prompt_info)
+    local rubypromptsize=$#rubyprompt
     local pwdsize=${#${(%):-%~}}
 
     if [[ "$promptsize + $rubypromptsize + $pwdsize" -gt $TERMWIDTH ]]; then
@@ -128,7 +138,7 @@ setprompt () {
     PROMPT='$PR_SET_CHARSET$PR_STITLE${(e)PR_TITLEBAR}\
 $PR_CYAN$PR_ULCORNER$PR_HBAR$PR_GREY(\
 $PR_GREEN%$PR_PWDLEN<...<%~%<<\
-$PR_GREY)`rvm_prompt_info || rbenv_prompt_info`$PR_CYAN$PR_HBAR$PR_HBAR${(e)PR_FILLBAR}$PR_HBAR$PR_GREY(\
+$PR_GREY)`_jonathan_theme_ruby_prompt_info`$PR_CYAN$PR_HBAR$PR_HBAR${(e)PR_FILLBAR}$PR_HBAR$PR_GREY(\
 $PR_CYAN%(!.%SROOT%s.%n)$PR_GREY@$PR_GREEN%m:%l\
 $PR_GREY)$PR_CYAN$PR_HBAR$PR_URCORNER\
 
