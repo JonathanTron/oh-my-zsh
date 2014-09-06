@@ -1,5 +1,3 @@
-functions chruby_prompt_info >& /dev/null || chruby_prompt_info(){}
-
 function _jonathan_theme_ruby_prompt_info {
   if [[ "$(rvm_prompt_info)" != "" ]]; then
     echo -n $(rvm_prompt_info)
