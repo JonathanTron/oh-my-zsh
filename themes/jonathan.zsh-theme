@@ -12,7 +12,6 @@ function theme_precmd {
     local TERMWIDTH
     (( TERMWIDTH = ${COLUMNS} - 1 ))
 
-
     ###
     # Truncate the path if it's too long.
 
@@ -20,6 +19,11 @@ function theme_precmd {
     PR_PWDLEN=""
 
     local promptsize=${#${(%):---(%n@%m:%l)---()--}}
+
+    # Ensure chruby_auto runs before precmd hook... otherwise wrong ruby version
+    # is displayed before any command is executed and preexec hook is run
+    functions chruby_auto > /dev/null && chruby_auto
+
     local rubyprompt=$(_jonathan_theme_ruby_prompt_info)
     local rubypromptsize=$#rubyprompt
     local pwdsize=${#${(%):-%~}}
