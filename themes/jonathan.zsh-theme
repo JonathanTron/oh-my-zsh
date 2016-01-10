@@ -8,6 +8,20 @@ function _jonathan_theme_ruby_prompt_info {
   fi
 }
 
+function _exenv-installed() {
+  whence exenv &> /dev/null
+}
+
+function _jonathan_theme_elixir_prompt_info {
+  if _exenv-installed; then
+    local _elixir
+    _elixir="$(exenv version | sed -e 's/ (.*)$//')"
+    if [[ "${_elixir}" != "" ]]; then
+      echo "(elixir-${_elixir})"
+    fi
+  fi
+}
+
 function theme_precmd {
     local TERMWIDTH
     (( TERMWIDTH = ${COLUMNS} - 1 ))
@@ -26,12 +40,14 @@ function theme_precmd {
 
     local rubyprompt=$(_jonathan_theme_ruby_prompt_info)
     local rubypromptsize=$#rubyprompt
+    local elixirprompt=$(_jonathan_theme_elixir_prompt_info)
+    local elixirpromptsize=$#elixirprompt
     local pwdsize=${#${(%):-%~}}
 
-    if [[ "$promptsize + $rubypromptsize + $pwdsize" -gt $TERMWIDTH ]]; then
+    if [[ "$promptsize + $rubypromptsize + $elixirpromptsize + $pwdsize" -gt $TERMWIDTH ]]; then
       ((PR_PWDLEN=$TERMWIDTH - $promptsize))
     else
-      PR_FILLBAR="\${(l.(($TERMWIDTH - ($promptsize + $rubypromptsize + $pwdsize)))..${PR_HBAR}.)}"
+      PR_FILLBAR="\${(l.(($TERMWIDTH - ($promptsize + $rubypromptsize + $elixirpromptsize + $pwdsize)))..${PR_HBAR}.)}"
     fi
 
 }
@@ -137,7 +153,7 @@ setprompt () {
     PROMPT='$PR_SET_CHARSET$PR_STITLE${(e)PR_TITLEBAR}\
 $PR_CYAN$PR_ULCORNER$PR_HBAR$PR_GREY(\
 $PR_GREEN%$PR_PWDLEN<...<%~%<<\
-$PR_GREY)`_jonathan_theme_ruby_prompt_info`$PR_CYAN$PR_HBAR$PR_HBAR${(e)PR_FILLBAR}$PR_HBAR$PR_GREY(\
+$PR_GREY)`_jonathan_theme_ruby_prompt_info``_jonathan_theme_elixir_prompt_info`$PR_CYAN$PR_HBAR$PR_HBAR${(e)PR_FILLBAR}$PR_HBAR$PR_GREY(\
 $PR_CYAN%(!.%SROOT%s.%n)$PR_GREY@$PR_GREEN%m:%l\
 $PR_GREY)$PR_CYAN$PR_HBAR$PR_URCORNER\
 
