@@ -19,8 +19,8 @@ fi
 setopt long_list_jobs
 
 ## pager
-export PAGER="less"
-export LESS="-R"
+env_default PAGER 'less'
+env_default LESS '-R'
 
 ## locale
 export LANG=en_US.UTF-8
